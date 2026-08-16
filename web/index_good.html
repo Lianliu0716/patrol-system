@@ -1,0 +1,93 @@
+
+<!-- <meta charset="utf-8"> -->
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  </head>
+
+
+<h2>上傳照片</h2>
+<input id="uploadFileInput" type="file" accept="image/*">
+
+<h2>取得照片</h2>
+<button id="getPicBtn">Get</button>
+<br></br>
+<img id="downloadedImg" width="300" >
+
+<!--<body>
+<img id="myimage" src="#" width="107" height="98">
+<br></br>
+
+<input type="button" onclick="Changesrc()" value="change image" src="#" >
+</body>-->
+
+
+<script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+<script>
+var config = {
+    apiKey: "YOUR_API_KEY",//"YOUR_API_KEY",
+    authDomain:"YOUR-PROJECT-ID.firebaseapp.com",// "YOUR-PROJECT-ID.firebaseapp.com",
+    databaseURL:"https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/",// "https://YOUR-PROJECT-ID.firebaseio.com",
+    storageBucket:"gs://YOUR-PROJECT-ID.appspot.com",// "YOUR-PROJECT-ID.appspot.com",
+    messagingSenderId:"YOUR_SENDER_ID",// "YOUR_SENDER_ID"https://www.gstatic.com/firebasejs/3.5.2/firebase.js
+  };
+firebase.initializeApp(config);
+/////////var storageRef = firebase.storage().ref();
+var storageRef=firebase.database().ref();
+
+
+
+var file;
+var uploadFileInput = document.getElementById("uploadFileInput");
+uploadFileInput.addEventListener("change", function(){
+	 file = this.files[0];/////
+  var uploadTask = storageRef.child('images/'+file.name).put(file);
+  uploadTask.on('state_changed', function(snapshot){
+    // Observe state change events such as progress, pause, and resume
+    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    console.log('Upload is ' + progress + '% done');
+    switch (snapshot.state) {
+      case firebase.storage.TaskState.PAUSED: // or 'paused'
+        console.log('Upload is paused');
+        break;
+      case firebase.storage.TaskState.RUNNING: // or 'running'
+        console.log('Upload is running');
+        break;
+    }
+  }, function(error) {
+    // Handle unsuccessful uploads
+  }, function() {
+    // Handle successful uploads on complete
+    // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+    var downloadURL = uploadTask.snapshot.downloadURL;
+  });
+},false);
+
+
+var PATH;
+var getPicBtn = document.getElementById("getPicBtn");
+var downloadedImg = document.getElementById("downloadedImg");
+var db=firebase.database();//弄掉realtime base 的亂碼
+db.ref('URL').limitToLast(1).once('value', function (snapshot) {
+   // var data = snapshot.val();
+    //console.log(data);
+    snapshot.forEach(function (item) {
+        console.log(item.val().Path);
+        PATH=item.val().Path;//圖片下載路徑
+    })
+   
+ });///////
+getPicBtn.addEventListener("click", function(){  
+  	downloadedImg.src = PATH;//url
+}, false)
+
+/*function Changesrc(){ 
+  var p = PATH.split("?")[0];
+  console.log(p);
+  //document.getElementById("myimage").setAttribute(src,"\""+p+"\"");////////上傳錯誤(整個function功能)
+  var img =document.getElementsByTagName("img")[0];
+  img.setAttribute("src","\""+PATH+"\"");
+  }*/
+
+
+</script>

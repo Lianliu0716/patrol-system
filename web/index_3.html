@@ -1,0 +1,930 @@
+<!-- <meta charset="utf-8"> 
+note
+1.要把檔案名稱設定成 1_2.jpg 像這樣再上傳 -->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div class="body_preview">
+    <h2>選擇照片</h2>
+    <p><input id="fileImage" type="file" accept="image/*"></p>
+    
+    <div id="filePreview" class="test_preview" style="display: none;" >
+        <textarea id="Preview"  style="display: none;">
+            &lt;p id="preview_area" style="display: block;margin-block-start: 1em;margin-block-end: 1em"&gt;
+            &lt;strong&gt;$name$&lt;/strong&gt;
+            &lt;progress max="100" value="0" &gt;&lt;/progress&gt;
+            &lt;span style="font-size: 10px;" id="uploadProgress"&gt;&lt;/span&gt;
+            &lt;/p&gt;
+            &lt;p&gt;&lt;img id="uploadImage" width="300" src="$result$" class="upload_image" /&gt;&lt;/p&gt;
+        
+
+        </textarea>
+    </div>
+        <div id="choose" class="test_preview" style="display: none;">
+            <strong>選擇上傳巡邏點</strong>
+            <select id="choose_patrol"></select>
+        </div>
+        <br>
+        <p>
+        <button style="display: none" id="uploadFileInput" type="submit" onclick="uploadFileInput()" >確認上傳</button>
+        </p>
+
+    <h2>上傳照片</h2>
+    <input id="uploadFileInput2" type="file" accept="image/*">
+
+    <!--<h2>取得照片</h2>
+    <button id="getPicBtn">Get</button><br/>
+    <img id="downloadedImg" width="300">
+
+    <h2>取得特定照片</h2>
+    <button id="getPicBtn2">Get2</button><br />
+    <img id="downloadedImg2" width="300">-->
+    </div>
+
+
+    <body>
+        <div class="box" id="allbox">
+        <textarea id="preview_box"  style="display: none;" >
+            &lt;div id=&quot;$box$&quot;&gt;
+            &lt;div class=&quot;list&quot;&gt;
+            &lt;ul id=&quot;$inbox$&quot; style=&quot;width: 152px; left: -347px;&quot;&gt;
+            &lt;/ul&gt; 
+           
+            &lt;/div&gt;
+            &lt;div class=&quot;scrollBar&quot;&gt;
+            &lt;div class=&quot;barL&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;barM&quot;&gt;
+            &lt;div class=&quot;bar&quot; style=&quot;left: 150px;&quot;&gt;
+            &lt;div class=&quot;l&quot;&gt;&lt;/div&gt;
+            &lt;div class=&quot;r&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;barR&quot;&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;/div&gt;
+        </textarea>
+        </div>
+
+        <div id="choose_path" class="view" style="text-align: center;display: none;">
+            <p style="font-size: medium">選擇今日各點之巡邏樣本為以下:</p>
+            <div id="choose_path2" style="white-space: nowrap;"></div>
+            <input type="button" value="確認各點之今日標準樣本" onclick="upload_pp()">
+        </div>
+        
+        <br></br>
+        <h2 for="path">更新經緯度: </h2>
+        <input id="path" type="text" name="path" />
+        <input id="getPathBtn" type="button" value="submit">
+        <!--<br></br>
+        <body onload="ymd()">
+            <form action="">
+                 onchange事件，当用户改变年、月时，触动函数selectYmd()函数
+                <select name="years" id="years" onchange="selectYmd()"></select>年
+                <select name="months" id="months" onchange="selectYmd()"></select>月
+                <select name="dates" id="dates"></select>日
+            </form>
+        </body>-->
+    </body>
+
+    <div>
+    <h2 style="display:inline-block;">選擇查詢日期</h2>
+    <form style="display:inline-block;" action="">
+        <!--<p style="font-size:x-large">選擇查詢日期</p>-->
+        <select id="date" onchange="Select()"></select>
+    </form>
+
+        <div id="WRAPPER" display="none">
+            <div id="BOX_A" >
+            </div>
+        
+            <div id="BOX_B">
+            </div>
+        
+            <div id="BOX_C">
+            </div>
+        </div>
+    </div>
+    <body>
+        <style type="text/css">
+            body,
+            div,
+            ul,
+            li,
+            p {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font: 14px/1.5 \5fae\8f6f\96c5\9ed1;
+            }
+            #WRAPPER {
+                margin:0 auto;
+                width:650px;
+                overflow:hidden; /* 當內容的<div>使用 Float 的時候 #WRAPPER 的高度會消失 */
+                                /* 使用 overflow:hidden; 即可破解這個問題 */ 
+                background-color:#c0bdbd; 
+                padding-top:20px; 
+                padding-bottom:20px; 
+                display: none;
+                } 
+                #BOX_A div {margin: 28px 0;}
+                #BOX_B div {margin: 28px 0;}
+                #BOX_C div {margin: 28px 0;}
+                #BOX_A { 
+                 display: flex;
+                 flex-direction: column;
+                    text-align: center;
+                    height: 250px; 
+                width:200px; /*<div>一定要先設定寬度之後才能使用 float 做水平排列 */ 
+                float:left; /* 使用 float 做水平排列 */ 
+                background-color:#e2e2e2; 
+                margin-left:12px; /* 設定欄位的左邊外間距 */ 
+                } 
+                #BOX_B { 
+                    text-align: center;
+                    height: 250px; 
+                width:200px; /*<div>一定要先設定寬度之後才能使用 float 做水平排列 */ 
+                float:left; /* 使用 float 做水平排列 */ 
+                background-color:#e2e2e2;
+                margin-left:12px; /* 設定欄位的左邊外間距 */ 
+                }
+                #BOX_C { 
+                    text-align: center;
+                    height: 250px; 
+                width:200px; /*<div>一定要先設定寬度之後才能使用 float 做水平排列 */ 
+                float:left; /* 使用 float 做水平排列 */ 
+                background-color:#e2e2e2; 
+                margin-left:12px; /* 設定欄位的左邊外間距 */ 
+                } 
+            .box {
+                width: 600px;
+                margin: 20px auto;
+            }
+            .rt{ width:100px;}
+            .list {
+                position: relative;
+                width: 600px;
+                height: 144px;
+                margin-bottom: 10px;
+                overflow: hidden;
+                border-radius: 8px;
+            }
+
+            .list ul {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 144px;
+            }
+
+            .list li {
+                display: inline;
+                float: left;
+                width: 144px;
+                height: 144px;
+                list-style: none;
+                background: #000;
+                margin-right: 8px;
+                border-radius: 8px;
+            }
+
+            .list li img {
+                float: left;
+                width: 124px;
+                height: 100px;
+                border-radius: 5px;
+                margin: 10px 0 0 10px;
+            }
+
+            .list li p {
+                float: left;
+                color: #fff;
+                width: 100%;
+                text-align: center;
+                line-height: 34px;
+            }
+
+            .scrollBar {
+                position: relative;
+                height: 19px;
+                background: #0a0a0a;
+                overflow: hidden;
+            }
+
+            .scrollBar .barL,
+            .scrollBar .barR,
+            .scrollBar .barLStop,
+            .scrollBar .barRStop {
+                position: absolute;
+                top: 0;
+                width: 28px;
+                height: 19px;
+                cursor: pointer;
+                background: url(img/03.gif) no-repeat;
+            }
+
+            .scrollBar .barL {
+                left: 0;
+            }
+
+            .scrollBar .barR {
+                right: 0;
+                background-position: right 0;
+            }
+
+            .scrollBar .barLStop {
+                left: 0;
+                background-position: 0 -19px;
+                cursor: default;
+            }
+
+            .scrollBar .barRStop {
+                right: 0;
+                background-position: right -19px;
+                cursor: default;
+            }
+
+            .scrollBar .barM {
+                position: relative;
+                height: 15px;
+                border: 1px solid #545454;
+                border-width: 1px 0;
+                margin: 0 28px;
+                padding: 1px 0;
+                z-index: 1;
+                cursor: pointer;
+            }
+
+            .scrollBar .bar {
+                position: absolute;
+                top: 1px;
+                left: 0;
+                width: 150px;
+                height: 15px;
+                cursor: e-resize;
+                background: #838181;
+            }
+
+            .scrollBar .bar .l,
+            .scrollBar .bar .r {
+                position: absolute;
+                top: 0;
+                width: 6px;
+                height: 15px;
+                background: url(img/02.gif) no-repeat;
+            }
+
+            .scrollBar .bar .l {
+                left: -6px;
+            }
+
+            .scrollBar .bar .r {
+                right: -6px;
+                background-position: right 0;
+            }
+
+            #desc {
+                color: #ccc;
+                width: 578px;
+                padding: 10px;
+                margin: 0 auto;
+                line-height: 2;
+                border: 1px dashed #666;
+            }
+
+            #desc dd {
+                margin-left: 2em;
+            }
+
+            .ta-r {
+                text-align: right;
+            }
+        </style>
+        <style>
+            .body_preview{
+                font-size: 14px;
+                margin: 0;
+                line-height: 1.5;
+                color: #333;
+                font-family: Arial, sans-serif;
+            }
+            .test_box {
+                width: 980px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .test_button {
+                display: none;
+                width: 120px;
+                height: 30px;
+            }
+            .test_preview {
+                display: none;
+                margin: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+            }
+            .view {
+                display: none;
+                margin: 10px;
+                width: 50%;
+                position: relative;
+                transform: translate(50%,0);
+                border: 2px solid #ddd;
+                padding: 10px;
+            }
+            .upload_image {
+                max-height: 200px;
+            }
+            progress {
+                width: 150px;/*160*/
+                height: 13.3px;
+                border: 1;  
+                background-color:#e6e6e6;
+                color: #0064B4; /*IE10*/
+                /*visibility: hidden;*/
+                display:none;
+            }
+            progress::-moz-progress-bar { background: linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%);/*background: #0064B4;*/ }
+            progress::-webkit-progress-bar { background: #e6e6e6; }
+            progress::-webkit-progress-value  {background: linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%);/*background: #0064B4;*/ }
+
+        </style>
+        
+    </body>
+
+</head>
+    <!-- script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script >
+        //ScrollBar
+        var get = {
+            byId: function (id) {
+                return typeof id === "string" ? document.getElementById(id) : id
+            }, byClass: function (sClass, oParent) {
+                var aClass = []; var reClass = new RegExp("(^| )" + sClass + "( |$)"); var aElem = this.byTagName("*", oParent); for (var i = 0; i < aElem.length; i++) reClass.test(aElem[i].className) && aClass.push(aElem[i]); return aClass
+            }, byTagName: function (elem, obj) {
+                return (obj || document).getElementsByTagName(elem)
+            }
+        }; function getStyle(obj, attr) {
+            return parseFloat(obj.currentStyle ? obj.currentStyle[attr] : getComputedStyle(obj, null)[attr])
+        }
+        var b=["box","box1","box2"];//box
+        window.onload = function(){
+            //get_data();
+            for(let i=0;i<3;i++){//////要調
+            run1(b[i]);
+            }
+            get_list_event();
+        }
+
+        function run1(a) {//html執行完 執行 window.onload 
+            var oBox = get.byId(a);
+            var oScrollBar = get.byClass("scrollBar", oBox)[0];
+            var oList = get.byClass("list", oBox)[0];
+            var oUl = get.byTagName("ul", oBox)[0];
+            var aLi = get.byTagName("li", oBox); 
+            var oBarL = get.byClass("barL", oScrollBar)[0];
+             var oBarM = get.byClass("barM", oScrollBar)[0];
+              var oBarR = get.byClass("barR", oScrollBar)[0]; 
+              var oBar = get.byClass("bar", oBarM)[0]; 
+              var maxL = oBarM.offsetWidth - oBar.offsetWidth; 
+              var iMarginRight = getStyle(aLi[0], "marginRight"); 
+              var timer = null; var iScale = 0; var disX = 0; var i = 0; 
+              oUl.style.width = (aLi[0].offsetWidth + iMarginRight) * aLi.length + "px";
+             oBar.onmousedown = function (event) {
+             
+                var event = event || window.event; disX = event.clientX - oBar.offsetLeft; document.onmousemove = function (event) {
+                    var event = event || window.event; var iL = event.clientX - disX; iL <= 0 && (iL = 0); iL >= maxL && (iL = maxL); oBar.style.left = iL + "px"; iScale = iL / maxL; return false
+                }; document.onmouseup = function () {
+                    startMove(oUl, parseInt((oList.offsetWidth + iMarginRight - oUl.offsetWidth) * iScale)); isStop(); document.onmousemove = null; document.onmouseup = null
+                }; return false
+            }; oBar.onclick = function (event) {
+                (event || window.event).cancelBubble = true
+            }; oBarL.onmouseover = oBarR.onmouseover = document.onkeydown = function (event) {
+                clearInterval(timer); var event = event || window.event; var iSpeed = 0; if (this == oBarR || event.keyCode == 39) {
+                    iSpeed = 5
+                }
+                else if (this == oBarL || event.keyCode == 37) {
+                    iSpeed = -5
+                }
+                timer = setInterval(function () {
+                    togetherMove(getStyle(oBar, "left") + iSpeed, 1)
+                }, 30)
+            }; oBarL.onmouseout = oBarR.onmouseout = document.onkeyup = function () {
+                clearInterval(timer)
+            }; oBarM.onclick = function (event) {
+                var iTarget = (event || window.event).clientX - oBox.offsetLeft - this.offsetLeft - oBar.offsetWidth / 2; togetherMove(iTarget)
+            }; oBox.onmouseover = function (event) {
+                event = event || window.event; function mouseWheel(event) {
+                    var delta = event.wheelDelta ? event.wheelDelta : -event.detail * 40
+                    var iTarget = delta > 0 ? -50 : 50; togetherMove(oBar.offsetLeft + iTarget)
+                }
+                addHandler(this, "mousewheel", mouseWheel); addHandler(this, "DOMMouseScroll", mouseWheel);
+            };         
+            function togetherMove(iTarget, buffer) {
+                if (iTarget <= 0) {
+                    timer && clearInterval(timer); iTarget = 0
+                }
+                else if (iTarget >= maxL) {
+                    timer && clearInterval(timer); iTarget = maxL
+                }
+                iScale = iTarget / maxL; startMove(oUl, parseInt((oList.offsetWidth + iMarginRight - oUl.offsetWidth) * iScale), function () { isStop() }, buffer); startMove(oBar, iTarget, function () { isStop() }, buffer)
+            }
+            function isStop() {
+                oBarL.className = "barL"; oBarR.className = "barR"; switch (oBar.offsetLeft) { case 0: /(^|\s)barLStop(\s|$)/.test(oBarL.className) || (oBarL.className += " barLStop"); break; case maxL: /(^|\s)barRStop(\s|$)/.test(oBarR.className) || (oBarR.className += " barRStop"); break; }
+            }
+            isStop()
+        
+        }; function addHandler(element, type, handler) {
+            return element.addEventListener ? element.addEventListener(type, handler, false) : element.attachEvent("on" + type, handler)
+        }
+        function startMove(obj, iTarget, fnEnd, buffer) {
+            clearInterval(obj.timer); obj.timer = setInterval(function () {
+                doMove(obj, iTarget, fnEnd, buffer)
+            }, 25)
+        }
+        function doMove(obj, iTarget, fnEnd, buffer) {
+            var iLeft = getStyle(obj, "left"); var iSpeed = (iTarget - iLeft) / (buffer || 5); iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed); iLeft == iTarget ? (clearInterval(obj.timer), fnEnd && fnEnd()) : obj.style.left = iLeft + iSpeed + "px"
+        }
+
+        var config = {
+            apiKey: "YOUR_API_KEY",//"YOUR_API_KEY",
+            authDomain: "YOUR-PROJECT-ID.firebaseapp.com",// "YOUR-PROJECT-ID.firebaseapp.com",
+            databaseURL: "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/",// "https://YOUR-PROJECT-ID.firebaseio.com",
+            storageBucket: "gs://YOUR-PROJECT-ID.appspot.com",// "YOUR-PROJECT-ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",// "YOUR_SENDER_ID"https://www.gstatic.com/firebasejs/3.5.2/firebase.js
+        };
+
+        firebase.initializeApp(config);
+        var storageRef = firebase.database().ref();
+        
+        var not_same_list="";
+        let map = new Map();
+        function get_list_event(){
+            $('.list').unbind();
+            $('.list').on('click', 'li', function(e) {//list 動態監聽, 冒泡過程由父元素處理子元素
+                //console.log($(this).find('p').text());
+                let temp=$(this).find('p').text();
+                let temp1 = temp.replace(".jpg","").split("_");
+
+                if(map.has(temp[0])){
+                    var temp7;
+                    switch(Number(temp[0])){
+                        case 1: temp7='inbox'; break;
+                        case 2: temp7='inbox1'; break;
+                        case 3: temp7='inbox2'; break;
+                    }
+                    $("#"+temp7+" li").css('background-color', 'black');
+                    $(this).css('background-color', 'red');
+                }else{
+                    $(this).css('background-color', 'red');
+                }
+                map.set(temp[0],temp.replace(".jpg",""));
+                show();
+                //not_same_list=$(this).parent().attr('id');
+                return false;       
+            }); 
+        }
+        
+        var str1 = new Array();
+        function show(){
+            $("#choose_path").show();
+            str1=[];
+            map=new Map([...map].sort());
+            for (let value of map.values()) {
+                str1.push(value);//.replace(".jpg","")
+            }
+            let outstr = str1.join(', ');
+            //console.log(outstr);
+            $("#choose_path2").html(outstr);
+        }
+
+        //上傳動態規劃-各點樣本
+        var t=new Object;
+        function upload_pp(){
+            $("#choose_path2").html("");
+            $("#choose_path").hide();
+            //var json = JSON.stringify(Object.fromEntries(map));
+            //console.log(json);
+            var todaysDate = new Date();
+            var dateString = moment(todaysDate).format("YYYY-MM-DD");//現在時間
+            map2=new Map();
+            for(let i=1;i<=str1.length;i++){
+                t["place"+i.toString()]=str1[i-1];
+                
+            }
+            console.log(t);
+            firebase.database().ref('/daily_data/user/' + dateString).set(t);
+            alert("ok");
+        }
+
+        //選擇圖片
+        var fileImage = document.getElementById("fileImage");
+        var file;
+        var downloadURL;
+        var elePreview=$("#filePreview");//預覽
+        //var Preview=$("#Preview");
+        var Preview=document.getElementById("Preview").value;//預覽的預備html
+        var preview_area=$("#preview_area");
+        var run_once=true;
+        fileImage.addEventListener("change", function () {
+            file = this.files[0];
+            if(file){
+                var reader=new FileReader();//file的url 
+                reader.readAsDataURL(file);
+                reader.onload = function(e){
+                    elePreview.css({'border':'3px solid gray','margin':'1em'});
+                    elePreview.show().html(Preview.replace("$name$",file.name).replace("$result$",e.target.result));
+                }
+                $("#uploadFileInput").show();
+                $("#choose").show();
+                if(run_once){
+                    for(let i=0;i<patrol_num;i++){//選單
+                    var str = temp[i].replace("/"," ");
+                    console.log(temp[i].replace("/",""))
+                    $("#choose_patrol").append("<option value='"+i+"'>"+str+"</option>");//選單選項
+                }}
+                run_once=false;
+                
+            }
+        }, function (error) {
+                alert("出現錯誤，無法正確選擇，請再嘗試一次");
+        });
+
+        //上傳照片
+        var pre_progress=0;
+        function A(progress){//run progress bar 
+            $("progress").css("display","inline");
+            //$("#uploadProgress").css("display","inline");//
+            preview_area.css("display","inline");
+            for(let i=pre_progress;i<=progress;i+=5){ 
+                $("progress").val(i);
+                $("#uploadProgress").html(i+"%");
+            }
+            pre_progress = progress;
+            return pre_progress;
+        }
+
+        function add_to_list(url,val,filename){//add uplaod photo into list
+            var box_temp;
+            let temp = filename.replace(".jpg","").split("_");
+            if(val===0){box_temp='inbox';}
+            else{ box_temp='inbox'+val.toString();}
+
+            if(Number(temp[0])<=patrol_num && Number(temp[1])<=each_num[Number(temp[0])-1]){//已存在 覆蓋
+                document.getElementById(filename).src=url;
+            }
+            else{
+                var li=document.createElement('li');
+                var p=document.createElement('p');
+                p.innerText = filename;
+                var img =  new Image();
+                img.src = url;
+                img.id=filename;
+                li.appendChild(img);
+                li.appendChild(p);
+                document.getElementById(box_temp).appendChild(li);
+                onload();
+                let temp6 = parseInt(each_num[val]);//更新資訊 多一個樣本圖
+                temp6++;
+                each_num[val]=temp6.toString();
+                db.ref('/patrol_web_load/each_num').set(each_num.join(''))
+                    .then(function () {
+                        console.log("更新each_num成功");
+                    }).catch(function () {
+                        console.log("更新each_num失敗");
+                    });;
+            }
+        }
+        function Finish(){//hidden preview area 
+                //把圖片加入到list
+                add_to_list(downloadURL,$("#choose_patrol option:selected").val(),file.name);
+                $("#uploadFileInput").hide();
+                $("#choose").hide();
+                $("#fileImage").val("");
+                $("#uploadProgress").html("");
+                $("progress").css("display","none").val("100");
+                alert("上傳成功");
+                elePreview.fadeOut(1000);
+        }
+        var progress;
+        var a=0;
+        function uploadFileInput(){//確認上傳
+            let options=$("#choose_patrol option:selected").text();
+            let str="/patrol_dataset/"+options+'/'+file.name;
+            var storageRef2 = firebase.storage().ref(str.replace(" ",""));//'image'
+            var uploadTask = storageRef2.put(file);
+            uploadTask.on('state_changed', async(snapshot)=>{
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                progress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED:
+                    break;
+                    case firebase.storage.TaskState.RUNNING: 
+                        a = await A(progress);
+                    break;
+                }
+            }, function (error) {
+                alert("上傳錯誤");
+            }, function () {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                if(progress==100) {
+                    downloadURL = uploadTask.snapshot.downloadURL;
+                    setTimeout(() => {Finish()},1500);
+                }
+            });
+        }
+
+        //下載圖片
+        var PATH;
+        //var getPicBtn = document.getElementById("getPicBtn");
+        //var downloadedImg = document.getElementById("downloadedImg");
+        var db = firebase.database();//弄掉realtime base 的亂碼
+        /*db.ref('URL').limitToLast(1).once('value', function (snapshot) {
+            snapshot.forEach(function (item) {
+                console.log(item.val().Path);
+                PATH = item.val().Path;//圖片下載路徑
+            })
+        });
+        getPicBtn.addEventListener("click", function () {
+            downloadedImg.src = PATH;//url
+        }, false)*/
+
+        let temp8=["BOX_A","BOX_B","BOX_C"];
+        async function Select(){
+            $("#WRAPPER").show();
+            $("#BOX_A").html("");
+            $("#BOX_B").html("");
+            $("#BOX_C").html("");
+
+            let x=$("#date option:selected").text();//日期
+            let x2=Object.values(get_daily_data[x.toString()]);
+            let darray = new Array();
+            for(let i=0;i<x2.length;i++){
+                console.log(x2.length);//3
+                let a = x2[i].split(",");
+                darray.push(a[0]);
+                darray.push(a[1]);
+            }
+
+            for(let k=0;k<darray.length;k=k+2){
+                if(darray[k+1]==null){
+                    var p=document.createElement('p');
+                    p.innerText ="巡邏點 "+darray[k]+" 未紀錄";
+                    document.getElementById(temp8[k/2]).appendChild(p);
+                    continue;
+                }
+                pathReference = firebase.storage().ref('photos/'+darray[k+1]);
+                await pathReference.getDownloadURL().then(function (url) {
+                    var img =  new Image();
+                    var li=document.createElement('li');
+                    var p=document.createElement('p');
+                    var div=document.createElement('div');
+                    p.innerText = darray[k];
+                    img.style.transform='rotate(90deg)';
+                    img.width=200;
+                    img.src = url;
+                    img.id=darray[k];
+                    let t=k/2;
+                    //li.appendChild(img);
+                    //li.appendChild(p);
+                    //document.getElementById(temp8[t]).appendChild(li);
+                    div.appendChild(img);
+                    document.getElementById(temp8[t]).appendChild(div);
+                    document.getElementById(temp8[t]).appendChild(p);
+                    onload();
+                })
+            }
+            //顯示使用者上傳圖片
+            //if(a.legth!=6){ alert("使用者未完整上傳，請通知使用者補齊") }//可改動 共三的點
+        }
+        
+        let get_daily_data={};
+        //顯示下拉式選單
+        db.ref('/daily_data/controller').once('value').then(async function(snapshot) {
+            get_daily_data = snapshot.val();
+            //console.log(snapshot.val());
+            var keys = Object.keys(get_daily_data);
+            for (var i = 0; i < keys.length; i++) {
+                $('#date').append(`<option value=${keys[i]}>${keys[i]}</option>`);//${keys[i]}
+                //obj.options.add(new Option(keys[i], keys[i]));// get_daily_data[keys[i]]);//圖片 逗號連
+                //console.log(get_daily_data[keys[i]][1]);//1 2 3
+            }
+        });
+
+        //顯示全部圖片樣本
+        var patrol_num;//幾個巡邏點 
+        var each_num; //各幾張巡邏點
+        var temp=["one/","two/","three/","four/","five/"];
+        db.ref('patrol_web_load').once('value').then(async function(snapshot) {
+            
+            each_num = snapshot.val().each_num;
+            each_num= each_num.split('');//each_num.split('');///////暫移
+            console.log(each_num)
+            patrol_num= snapshot.val().num;//snapshot.val().num;///////暫移
+            console.log(patrol_num)
+            var j=0;
+            //addLoadEvent( function temp5(){run1("box1")} );
+            while(patrol_num>j){//動態加載box 只跑一次
+                var Preview_box=document.getElementById("preview_box").value;
+                if(j===0){ Preview_box = $(Preview_box.replace("$box$","box").replace("$inbox$","inbox"));}
+                else{ Preview_box = $(Preview_box.replace("$box$","box"+j.toString()).replace("$inbox$","inbox"+j.toString()));}
+                var add_area=$("#allbox");
+                add_area.append(Preview_box);
+
+                j+=1;
+            }
+
+            //addLoadEvent( function temp5(){run1("box1");} );
+            for(let i=1;i<=patrol_num;i++){
+                for(let j=1;j<=Number(each_num[i-1]);j++){//Number(each_num[i])暫移//////
+                    var temp2=i+"_"+j+".jpg";
+                    pathReference = firebase.storage().ref('patrol_dataset/'+temp[i-1]+temp2);
+                    console.log('patrol_dataset/'+temp[i-1]+temp2);
+                    //patrol_url_map.set(temp2,null);//還是保留沒有的
+                    await pathReference.getDownloadURL().then(function (url) {
+                        ///patrol_url_map.set(temp2,url);
+                        var box_temp;
+                        switch(i){
+                            case 1: box_temp='inbox'; break;
+                            case 2: box_temp='inbox1'; break;
+                            case 3: box_temp='inbox2'; break;
+                        }
+                        var li=document.createElement('li');
+                        var p=document.createElement('p');
+                        console.log(temp2);
+                        p.innerText = temp2;
+                        var img =  new Image();
+                        img.id=temp2;
+                        img.src = url;
+                        li.appendChild(img);
+                        li.appendChild(p);
+                        document.getElementById(box_temp).appendChild(li);
+                        //onload();
+                    })
+                }
+            }
+            onload();
+        });
+
+        //2 下載特定=> 換成全部 還有上傳的時候
+        /*var PATH2 = "1_1.JPG";
+        var getPicBtn2 = document.getElementById("getPicBtn2");
+        var downloadedImg2 = document.getElementById("downloadedImg2");
+
+        getPicBtn2.addEventListener("click", async function () {
+            var pathReference = firebase.storage().ref('patrol_dataset/one/'+"1_1.JPG");
+            await pathReference.getDownloadURL().then(function (url) {
+                //downloadedImg2.src = url;
+                 ///var ce = document.createElement.bind(document);
+                 ///var li= ce("li");
+                 var temp = document.getElementById('inbox');
+                 var li=document.createElement('li');
+                 var p=document.createElement('p');
+                 //var textNode = document.createTextNode(PATH2);
+                 p.innerText=PATH2;
+                 var img =  new Image();
+                 img.src = url;
+                li.appendChild(img);
+                li.appendChild(p);
+                temp.appendChild(li);
+                onload();
+            })
+        }, false)
+*/
+
+        //上傳路徑 -> 改經緯度
+        var getPathBtn = document.getElementById("getPathBtn");
+        getPathBtn.addEventListener("click", function () {
+            var getvalue = document.getElementById("path").value;
+            db.ref('Path').set(getvalue)
+                .then(function () {
+                    alert("更新成功");
+                }).catch(function () {
+                    alert("伺服器發生錯誤，請稍後再試");
+                });
+        }, false)
+
+        //*dmap 型式 = (6) ['2_3', 'https://firebasestorage.googleapis.com/v0/b/app4-…d.appspot.com/o?name=photos%2F20231025025818.jpg', '3_2', 'https://firebasestorage.googleapis.com/v0/b/app4-…d.appspot.com/o?name=photos%2F20231025025806.jpg', '1_1', 'https://firebasestorage.googleapis.com/v0/b/app4-…d.appspot.com/o?name=photos%2F20231025025754.jpg']*
+        //選list變色
+                //$(".list li").css('background-color', 'black');
+                /*if(not_same_list!=""){
+                    if(not_same_list!=$(this).parent().attr('id')){//list不同
+                        $(this).css('background-color', 'red');
+                    }
+                    else{//同list內
+                        $("#"+not_same_list+" li").css('background-color', 'black');
+                        $(this).css('background-color', 'red');
+                    }
+                }
+                else{
+                    $(this).css('background-color', 'red');
+                }*/
+        //
+        ///let patrol_url_map = new Map();
+        //var getPicBtn2 = document.getElementById("getPicBtn2");
+
+        /*getPicBtn2.addEventListener("click", async function () {
+            for(let i=1;i<=patrol_num;i++){
+                for(let j=1;j<=Number(each_num[i]);j++){
+                    var temp2=i+"_"+j+".jpg";
+                    pathReference = firebase.storage().ref('patrol_dataset/'+temp[i-1]+temp2);
+                    console.log('patrol_dataset/'+temp[i-1]+temp2);
+                    //patrol_url_map.set(temp2,null);//還是保留沒有的
+                     pathReference.getDownloadURL().then(function (url) {
+                        ///patrol_url_map.set(temp2,url);
+                        var box_temp;
+                        switch(i){
+                            case 1: box_temp='inbox'; break;
+                            case 2: box_temp='inbox1'; break;
+                            //case 3: box_temp="box2";//
+                        }
+                        var li=document.createElement('li');
+                        var p=document.createElement('p');
+                        //var textNode = document.createTextNode(PATH2);
+                        p.innerText = temp2;
+                        var img =  new Image();
+                        img.src = url;
+                        li.appendChild(img);
+                        li.appendChild(p);
+                        document.getElementById(box_temp).appendChild(li);
+                        onload();
+                    })
+                }
+            }
+        //})*/
+
+
+        /*.child 
+         document.createElement('xx') 會爛掉
+        .appendChild 只能傳入節點，而且不能傳入字串*/
+        /*function writepathdata(){
+         var getPicBtn = document.getElementById("path");
+         db.ref('user1/Path').set(getPicBtn.val)
+         .then(function () {
+             alert("建立成功");
+         }).catch(function () {
+             alert("伺服器發生錯誤，請稍後再試");
+         });;
+         }
+      function Changesrc(){ 
+         var p = PATH.split("?")[0];
+         console.log(p);
+         //document.getElementById("myimage").setAttribute(src,"\""+p+"\"");////////上傳錯誤(整個function功能)
+         var img =document.getElementsByTagName("img")[0];
+         img.setAttribute("src","\""+PATH+"\"");
+         }*/
+
+   /*//上傳照片 爛掉
+        var file;
+        var uploadFileInput = document.getElementById("uploadFileInput");
+        var elePreview=$("#filePreview");
+        var Preview=$("#Preview");
+        uploadFileInput.addEventListener("change", function () {
+            file = this.files[0];/////
+            if(file){
+                var reader=new FileReader();
+                reader.onload = function(e){
+                    elePreview.show().html(Preview.replace("$name$",file.name).replace("$result$",e.target.result));
+                }
+                $("#fileSubmit").show();
+            }
+            var storageRef2 = firebase.storage().ref('images/'+file.name);
+            var uploadTask = storageRef2.put(file);
+            uploadTask.on('state_changed', function (snapshot) {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                var complete = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100 |0);
+                this.progress=complete;
+                console.log('Upload is ' + progress + '% done');
+                $("progress").css("vibility","visible").val(complete);
+
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        break;
+                }
+            }, function (error) {
+                alert("上傳錯誤");
+            }, function () {
+                var downloadURL = uploadTask.snapshot.downloadURL;
+            });
+        }, false);*/
+    </script>
+
+ 

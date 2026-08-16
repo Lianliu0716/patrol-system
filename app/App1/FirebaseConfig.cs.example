@@ -1,0 +1,18 @@
+namespace App1
+{
+    /// <summary>
+    /// Firebase 連線設定。
+    ///
+    /// 使用方式：把這個檔案複製成 FirebaseConfig.cs，填入你自己的
+    /// Firebase 專案資訊。FirebaseConfig.cs 已被 .gitignore 排除，
+    /// 不會被推上 GitHub。
+    /// </summary>
+    public static class FirebaseConfig
+    {
+        // Realtime Database 網址，結尾要保留斜線
+        public const string DatabaseUrl = "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/";
+
+        // Storage bucket，不要加 gs:// 前綴
+        public const string StorageBucket = "YOUR-PROJECT-ID.appspot.com";
+    }
+}

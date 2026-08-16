@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App1.Finish">
+    <ContentPage.Content>
+        <StackLayout>
+            <Label x:Name="show" Text="完成巡邏並上傳完畢"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" />
+            <Button Text="回到主頁面" Clicked="back">
+            </Button>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,34 @@
+# === 機密設定（絕對不要 commit）===
+.env
+**/FirebaseConfig.cs
+.firebaserc
+.firebase/
+
+# === Node ===
+node_modules/
+npm-debug.log*
+
+# === Visual Studio / Xamarin ===
+bin/
+obj/
+.vs/
+packages/
+*.user
+*.suo
+*.userprefs
+UpgradeLog*.htm
+
+# === Android ===
+*.apk
+*.keystore
+*.jks
+
+# === 壓縮備份 ===
+*.zip
+*.rar
+*.7z
+
+# === 作業系統 ===
+Thumbs.db
+Desktop.ini
+.DS_Store

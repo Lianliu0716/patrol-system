@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"  Title="Camera View"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="App1.Views.CameraViewPage">
+    <ContentPage.Content>
+        <Grid>
+            <xct:CameraView
+                x:Name="xctCameraView"
+                CaptureMode="Photo"
+                MediaCaptured="MediaCaptured"
+                HorizontalOptions="FillAndExpand"
+                VerticalOptions="FillAndExpand" />
+
+            <Image 
+                x:Name="img" 
+                Rotation="90"
+               HorizontalOptions="Center"
+                WidthRequest="400" 
+                HeightRequest="800"
+                Opacity="0.5"
+                IsVisible="true">
+
+                </Image>
+
+
+                <!--            
+        Source="{Binding ShowImage}"600 400    Aspect="AspectFit"   400 800
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="0">
+                <StackLayout Spacing="0">
+                    <Image x:Name="img"  Aspect="AspectFit" Opacity="0.5">
+                    </Image>
+                </StackLayout>
+            </StackLayout>-->
+            
+
+            <!--Source="TXT.jpg"<StackLayout VerticalOptions="Center" HorizontalOptions="Center" x:Name="imgViewPanel" Spacing="0">
+                <Frame Padding="3" BackgroundColor="White" HeightRequest="400" WidthRequest="200">
+                    <StackLayout Spacing="0">
+                        <Image Source="icon.png" Aspect="AspectFit" x:Name="imgView" Rotation="90"/>
+                        <Button Text="Close" VerticalOptions="EndAndExpand" Clicked="CloseImageView"/>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+             顯示圖片-->
+            <StackLayout VerticalOptions="EndAndExpand" Spacing="2" Padding="6">
+                <Label Text="On" TextColor="White" FontSize="14" VerticalOptions="Center" x:Name="Mode"/>
+                <StackLayout Orientation="Horizontal">
+                    <Switch IsToggled="True" Toggled="Switch_Toggled" x:Name="switchMode" VerticalOptions="Center"/>
+                </StackLayout>
+        
+                <Button Text="Capture" Clicked="CaptureImage" x:Name="captureBtn"/>
+            
+                <!--<StackLayout Orientation="Horizontal">
+                    <Button Text="Record Video" Clicked="RecordVideo" IsEnabled="false" x:Name="btnrecordVideo" 
+                            HorizontalOptions="FillAndExpand"/>
+                    <Button Text="Stop Video" Clicked="StopVideo" IsEnabled="False" x:Name="btnstopVideo" 
+                            VerticalOptions="EndAndExpand"  HorizontalOptions="FillAndExpand"/>
+                </StackLayout>-->
+            </StackLayout>
+            
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

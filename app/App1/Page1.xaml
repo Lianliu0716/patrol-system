@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="App1.Page1"
+            xmlns:local="clr-namespace:StepProgressBarSample" >
+    <ContentPage.Content>
+        <StackLayout Padding="10,40" >
+            <!--Padding="10,40 "StepSelected="1" -->
+            <local:StepProgressBarControl  StepColor="Blue" Steps="4" x:Name="stepBar" PropertyChanged="stepBar_PropertyChanged" />
+            <Grid VerticalOptions="FillAndExpand"  HorizontalOptions="FillAndExpand" Padding="20,10,10,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="2*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+                <Label  
+                    Text="Standard Photo"
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"
+                    HorizontalTextAlignment="Center"
+                    FontSize="30"/>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                    <ActivityIndicator   
+                    IsRunning="{Binding Source={x:Reference image}, Path=IsLoading}"
+                    AbsoluteLayout.LayoutBounds=".5, .5, 100, 100"  
+                    AbsoluteLayout.LayoutFlags="PositionProportional" Color="#72DDD2" />
+                    <Image
+                    x:Name="image"
+                    Rotation="90"
+                    />
+                </Grid>
+
+
+                <Button
+                    Text="拍攝比對"
+                    BackgroundColor="LightSteelBlue"
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Padding="5"
+                    Clicked="takephoto"
+                    />
+
+                <Button
+                    Text="GPS定位"
+                    BackgroundColor="Thistle"
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Padding="5"
+                    Clicked="gps"
+                    />
+
+            </Grid>
+
+
+
+            <!--<Label BindingContext="{x:Reference stepBar}"
+               Text="{Binding StepSelected, StringFormat='The Step Selected is {0}'}"
+               FontAttributes="Bold"
+               FontSize="Large"
+               HorizontalOptions="Center"
+               VerticalOptions="CenterAndExpand" />-->
+
+
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

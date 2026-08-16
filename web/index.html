@@ -1,0 +1,592 @@
+<!-- <meta charset="utf-8"> 
+    "<p>$name$<progress max="100" value="0"><span id="uploadProgress"></span></progress></p> <p><img id="uploadImage" src="$result$"></p>"-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    <div class="body_preview">
+    <h2>選擇照片</h2>
+    <p><input id="fileImage" type="file" accept="image/*"></p>
+    
+    <div id="filePreview" class="test_preview" style="display: none;" >
+        <textarea id="Preview"  style="display: none;">
+            &lt;p id="preview_area" style="display: block;margin-block-start: 1em;margin-block-end: 1em"&gt;
+            &lt;strong&gt;$name$&lt;/strong&gt;
+            &lt;progress max="100" value="0" &gt;&lt;/progress&gt;
+            &lt;span style="font-size: 10px;" id="uploadProgress"&gt;&lt;/span&gt;
+            &lt;/p&gt;
+            &lt;p&gt;&lt;img id="uploadImage" width="300" src="$result$" class="upload_image" /&gt;&lt;/p&gt;
+        </textarea>
+    </div>
+    <p>
+        <button id="uploadFileInput" type="submit" onclick="uploadFileInput()" style="display: none">確認上傳</button>
+    </p>
+
+    <h2>上傳照片</h2>
+    <input id="uploadFileInput2" type="file" accept="image/*">
+
+    <h2>取得照片</h2>
+    <button id="getPicBtn">Get</button><br/>
+    <img id="downloadedImg" width="300">
+
+    <h2>取得特定照片</h2>
+    <button id="getPicBtn2">Get2</button><br />
+    <img id="downloadedImg2" width="300">
+    </div>
+
+    <body>
+        <div id="box">
+            <div class="list">
+                <ul id="inbox" style="width: 1520px; left: -347px;">
+                    <li><img src="img/1.jpg">
+                        <p>iPhone 4</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="scrollBar">
+                <div class="barL"></div>
+                <div class="barM">
+                    <div class="bar" style="left: 150px;">
+                        <div class="l"></div>
+                        <div class="r"></div>
+                    </div>
+                </div>
+                <div class="barR"></div>
+            </div>
+        </div>
+
+
+        <label for="path">路線: </label>
+        <input id="path" type="text" name="path" />
+        <input id="getPathBtn" type="button" value="submit">
+        <br></br>
+    </body>
+    <body>
+        <style type="text/css">
+            body,
+            div,
+            ul,
+            li,
+            p {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font: 14px/1.5 \5fae\8f6f\96c5\9ed1;
+            }
+
+            #box {
+                width: 600px;
+                margin: 20px auto;
+            }
+            .rt{ width:100px;}
+            .list {
+                position: relative;
+                width: 600px;
+                height: 144px;
+                margin-bottom: 10px;
+                overflow: hidden;
+                border-radius: 8px;
+            }
+
+            .list ul {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 144px;
+            }
+
+            .list li {
+                display: inline;
+                float: left;
+                width: 144px;
+                height: 144px;
+                list-style: none;
+                background: #000;
+                margin-right: 8px;
+                border-radius: 8px;
+            }
+
+            .list li img {
+                float: left;
+                width: 124px;
+                height: 100px;
+                border-radius: 5px;
+                margin: 10px 0 0 10px;
+            }
+
+            .list li p {
+                float: left;
+                color: #fff;
+                width: 100%;
+                text-align: center;
+                line-height: 34px;
+            }
+
+            .scrollBar {
+                position: relative;
+                height: 19px;
+                background: #0a0a0a;
+                overflow: hidden;
+            }
+
+            .scrollBar .barL,
+            .scrollBar .barR,
+            .scrollBar .barLStop,
+            .scrollBar .barRStop {
+                position: absolute;
+                top: 0;
+                width: 28px;
+                height: 19px;
+                cursor: pointer;
+                background: url(img/03.gif) no-repeat;
+            }
+
+            .scrollBar .barL {
+                left: 0;
+            }
+
+            .scrollBar .barR {
+                right: 0;
+                background-position: right 0;
+            }
+
+            .scrollBar .barLStop {
+                left: 0;
+                background-position: 0 -19px;
+                cursor: default;
+            }
+
+            .scrollBar .barRStop {
+                right: 0;
+                background-position: right -19px;
+                cursor: default;
+            }
+
+            .scrollBar .barM {
+                position: relative;
+                height: 15px;
+                border: 1px solid #545454;
+                border-width: 1px 0;
+                margin: 0 28px;
+                padding: 1px 0;
+                z-index: 1;
+                cursor: pointer;
+            }
+
+            .scrollBar .bar {
+                position: absolute;
+                top: 1px;
+                left: 0;
+                width: 150px;
+                height: 15px;
+                cursor: e-resize;
+                background: #838181;
+            }
+
+            .scrollBar .bar .l,
+            .scrollBar .bar .r {
+                position: absolute;
+                top: 0;
+                width: 6px;
+                height: 15px;
+                background: url(img/02.gif) no-repeat;
+            }
+
+            .scrollBar .bar .l {
+                left: -6px;
+            }
+
+            .scrollBar .bar .r {
+                right: -6px;
+                background-position: right 0;
+            }
+
+            #desc {
+                color: #ccc;
+                width: 578px;
+                padding: 10px;
+                margin: 0 auto;
+                line-height: 2;
+                border: 1px dashed #666;
+            }
+
+            #desc dd {
+                margin-left: 2em;
+            }
+
+            .ta-r {
+                text-align: right;
+            }
+        </style>
+        <style>
+            .body_preview{
+                font-size: 14px;
+                margin: 0;
+                line-height: 1.5;
+                color: #333;
+                font-family: Arial, sans-serif;
+            }
+            .test_box {
+                width: 980px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .test_button {
+                display: none;
+                width: 120px;
+                height: 30px;
+            }
+            .test_preview {
+                display: none;
+                margin: 10px;
+                border: 1px solid #ddd;
+                padding: 10px;
+            }
+            .upload_image {
+                max-height: 200px;
+            }
+            progress {
+                width: 150px;/*160*/
+                height: 13.3px;
+                border: 1;  
+                background-color:#e6e6e6;
+                color: #0064B4; /*IE10*/
+                /*visibility: hidden;*/
+                display:none;
+            }
+            progress::-moz-progress-bar { background: linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%);/*background: #0064B4;*/ }
+            progress::-webkit-progress-bar { background: #e6e6e6; }
+            progress::-webkit-progress-value  {background: linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%);/*background: #0064B4;*/ }
+
+        </style>
+        
+    </body>
+
+</head>
+    <!-- script -->
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.5.2/firebase.js"></script>
+    <script src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script >
+        var get = {
+            byId: function (id) {
+                return typeof id === "string" ? document.getElementById(id) : id
+            }, byClass: function (sClass, oParent) {
+                var aClass = []; var reClass = new RegExp("(^| )" + sClass + "( |$)"); var aElem = this.byTagName("*", oParent); for (var i = 0; i < aElem.length; i++) reClass.test(aElem[i].className) && aClass.push(aElem[i]); return aClass
+            }, byTagName: function (elem, obj) {
+                return (obj || document).getElementsByTagName(elem)
+            }
+        }; function getStyle(obj, attr) {
+            return parseFloat(obj.currentStyle ? obj.currentStyle[attr] : getComputedStyle(obj, null)[attr])
+        }
+        window.onload = function () {//html執行完 執行
+            var oBox = get.byId("box");
+            var oScrollBar = get.byClass("scrollBar", oBox)[0];
+            var oList = get.byClass("list", oBox)[0]; var oUl = get.byTagName("ul", oBox)[0]; var aLi = get.byTagName("li", oBox); var oBarL = get.byClass("barL", oScrollBar)[0]; var oBarM = get.byClass("barM", oScrollBar)[0]; var oBarR = get.byClass("barR", oScrollBar)[0]; var oBar = get.byClass("bar", oBarM)[0]; var maxL = oBarM.offsetWidth - oBar.offsetWidth; var iMarginRight = getStyle(aLi[0], "marginRight"); var timer = null; var iScale = 0; var disX = 0; var i = 0; oUl.style.width = (aLi[0].offsetWidth + iMarginRight) * aLi.length + "px"; oBar.onmousedown = function (event) {
+                var event = event || window.event; disX = event.clientX - oBar.offsetLeft; document.onmousemove = function (event) {
+                    var event = event || window.event; var iL = event.clientX - disX; iL <= 0 && (iL = 0); iL >= maxL && (iL = maxL); oBar.style.left = iL + "px"; iScale = iL / maxL; return false
+                }; document.onmouseup = function () {
+                    startMove(oUl, parseInt((oList.offsetWidth + iMarginRight - oUl.offsetWidth) * iScale)); isStop(); document.onmousemove = null; document.onmouseup = null
+                }; return false
+            }; oBar.onclick = function (event) {
+                (event || window.event).cancelBubble = true
+            }; oBarL.onmouseover = oBarR.onmouseover = document.onkeydown = function (event) {
+                clearInterval(timer); var event = event || window.event; var iSpeed = 0; if (this == oBarR || event.keyCode == 39) {
+                    iSpeed = 5
+                }
+                else if (this == oBarL || event.keyCode == 37) {
+                    iSpeed = -5
+                }
+                timer = setInterval(function () {
+                    togetherMove(getStyle(oBar, "left") + iSpeed, 1)
+                }, 30)
+            }; oBarL.onmouseout = oBarR.onmouseout = document.onkeyup = function () {
+                clearInterval(timer)
+            }; oBarM.onclick = function (event) {
+                var iTarget = (event || window.event).clientX - oBox.offsetLeft - this.offsetLeft - oBar.offsetWidth / 2; togetherMove(iTarget)
+            }; oBox.onmouseover = function (event) {
+                event = event || window.event; function mouseWheel(event) {
+                    var delta = event.wheelDelta ? event.wheelDelta : -event.detail * 40
+                    var iTarget = delta > 0 ? -50 : 50; togetherMove(oBar.offsetLeft + iTarget)
+                }
+                addHandler(this, "mousewheel", mouseWheel); addHandler(this, "DOMMouseScroll", mouseWheel);
+            };         
+            /*liList = Array.from(aLi)
+            Ul = document.getElementsByTagName('ul')[0]
+            Ul.addEventListener("click",function(event){
+            var event = event || window.event;
+                target = event.target || event.srcElement;
+                console.log(liList.indexOf(target))
+            },false);*/
+            function togetherMove(iTarget, buffer) {
+                if (iTarget <= 0) {
+                    timer && clearInterval(timer); iTarget = 0
+                }
+                else if (iTarget >= maxL) {
+                    timer && clearInterval(timer); iTarget = maxL
+                }
+                iScale = iTarget / maxL; startMove(oUl, parseInt((oList.offsetWidth + iMarginRight - oUl.offsetWidth) * iScale), function () { isStop() }, buffer); startMove(oBar, iTarget, function () { isStop() }, buffer)
+            }
+            function isStop() {
+                oBarL.className = "barL"; oBarR.className = "barR"; switch (oBar.offsetLeft) { case 0: /(^|\s)barLStop(\s|$)/.test(oBarL.className) || (oBarL.className += " barLStop"); break; case maxL: /(^|\s)barRStop(\s|$)/.test(oBarR.className) || (oBarR.className += " barRStop"); break; }
+            }
+            isStop()
+        }; function addHandler(element, type, handler) {
+            return element.addEventListener ? element.addEventListener(type, handler, false) : element.attachEvent("on" + type, handler)
+        }
+        function startMove(obj, iTarget, fnEnd, buffer) {
+            clearInterval(obj.timer); obj.timer = setInterval(function () {
+                doMove(obj, iTarget, fnEnd, buffer)
+            }, 25)
+        }
+        function doMove(obj, iTarget, fnEnd, buffer) {
+            var iLeft = getStyle(obj, "left"); var iSpeed = (iTarget - iLeft) / (buffer || 5); iSpeed = iSpeed > 0 ? Math.ceil(iSpeed) : Math.floor(iSpeed); iLeft == iTarget ? (clearInterval(obj.timer), fnEnd && fnEnd()) : obj.style.left = iLeft + iSpeed + "px"
+        }
+        /*$('.list').on('click', 'li', function(e) {//list 動態監聽, 冒泡過程由父元素處理子元素
+                console.log($(this).find('p').text());
+
+                $(".list li").css('background-color', 'black');
+                $(this).css('background-color', 'red');
+                 return false;       
+            });*/
+        
+
+        var config = {
+            apiKey: "YOUR_API_KEY",//"YOUR_API_KEY",
+            authDomain: "YOUR-PROJECT-ID.firebaseapp.com",// "YOUR-PROJECT-ID.firebaseapp.com",
+            databaseURL: "https://YOUR-PROJECT-ID-default-rtdb.firebaseio.com/",// "https://YOUR-PROJECT-ID.firebaseio.com",
+            storageBucket: "gs://YOUR-PROJECT-ID.appspot.com",// "YOUR-PROJECT-ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",// "YOUR_SENDER_ID"https://www.gstatic.com/firebasejs/3.5.2/firebase.js
+        };
+
+        firebase.initializeApp(config);
+        var storageRef = firebase.database().ref();
+
+        //選擇圖片
+        var fileImage = document.getElementById("fileImage");
+        var file;
+        var elePreview=$("#filePreview");//預覽
+        //var Preview=$("#Preview");//預覽的預備html
+        var Preview=document.getElementById("Preview").value;
+        var preview_area=$("#preview_area");
+
+        fileImage.addEventListener("change", function () {
+            file = this.files[0];
+            if(file){
+                var reader=new FileReader();//file的url 
+                reader.readAsDataURL(file);
+                reader.onload = function(e){
+                    elePreview.css({'border':'3px solid gray','margin':'1em'});
+                    elePreview.show().html(Preview.replace("$name$",file.name).replace("$result$",e.target.result));
+                }
+                $("#uploadFileInput").show();
+            }
+        }, function (error) {
+                alert("出現錯誤，無法正確選擇，請再嘗試一次");
+        }, function () {
+            var downloadURL = uploadTask.snapshot.downloadURL;
+        });
+
+        //上傳照片
+        var pre_progress=0;
+        function A(progress){//run progress bar 
+            $("progress").css("display","inline");
+            $("#uploadProgress").css("display","inline");
+            preview_area.css("display","inline");
+            for(let i=pre_progress;i<=progress;i+=5){ 
+                $("progress").val(i);
+                $("#uploadProgress").html(i+"%");
+            }
+            pre_progress = progress;
+            return pre_progress;
+        }
+
+        function Finish(){//hidden preview area 
+                $("#uploadFileInput").hide();
+                $("#fileImage").val(""); 
+                $("#uploadProgress").html("");
+                $("progress").css("display","none").val("100");
+                alert("上傳成功");
+                elePreview.fadeOut(1000);
+
+        }
+        var progress;
+        var a=0;
+        function uploadFileInput(){
+            var storageRef2 = firebase.storage().ref('images/'+file.name);
+            var uploadTask = storageRef2.put(file);
+            uploadTask.on('state_changed', async(snapshot)=>{
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                progress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED:
+                    break;
+                    case firebase.storage.TaskState.RUNNING: 
+                        a = await A(progress);
+                    break;
+                }
+            }, function (error) {
+                alert("上傳錯誤");
+            }, function () {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                if(progress==100) setTimeout(() => {Finish()},1500);
+            });
+        }
+
+        //上傳照片 爛掉
+        /*var file;
+        var uploadFileInput2 = document.getElementById("uploadFileInput2");
+        var elePreview=$("#filePreview");
+        var Preview=document.getElementById("Preview").value;
+        console.log(Preview);
+        uploadFileInput2.addEventListener("change", function () {
+            file = this.files[0];/////
+            if(file){
+                var reader=new FileReader();
+                reader.onload = function(e){
+                    elePreview.show().html(Preview.replace("$name$",file.name).replace("$result$",e.target.result));
+                }
+                $("#fileSubmit").show();
+            }
+            var storageRef2 = firebase.storage().ref('images/'+file.name);
+            var uploadTask = storageRef2.put(file);
+            uploadTask.on('state_changed', function (snapshot) {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                var complete = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100 |0);
+                this.progress=complete;
+                console.log('Upload is ' + progress + '% done');
+                $("progress").css("vibility","visible").val(complete);
+
+            }, function (error) {
+                alert("上傳錯誤");
+            }, function () {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                var downloadURL = uploadTask.snapshot.downloadURL;
+            });
+        }, false);
+        */
+
+        //下載圖片
+        var PATH;
+        var getPicBtn = document.getElementById("getPicBtn");
+        var downloadedImg = document.getElementById("downloadedImg");
+        var db = firebase.database();//弄掉realtime base 的亂碼
+        db.ref('URL').limitToLast(1).once('value', function (snapshot) {
+            // var data = snapshot.val();
+            //console.log(data);
+            snapshot.forEach(function (item) {
+                console.log(item.val().Path);
+                PATH = item.val().Path;//圖片下載路徑
+            })
+        });
+        getPicBtn.addEventListener("click", function () {
+            downloadedImg.src = PATH;//url
+        }, false)
+
+        //2 特定=> 換成全部 還有上傳的時候
+        var PATH2 = "1_1.JPG";
+        var getPicBtn2 = document.getElementById("getPicBtn2");
+        var downloadedImg2 = document.getElementById("downloadedImg2");
+        getPicBtn2.addEventListener("click", async function () {
+            var pathReference = firebase.storage().ref('patrol_dataset/one/1_1.JPG');
+            await pathReference.getDownloadURL().then(function (url) {
+                //downloadedImg2.src = url;
+                 ///var ce = document.createElement.bind(document);
+                 ///var li= ce("li");
+                 var temp = document.getElementById('inbox');
+                 var li=document.createElement('li');
+                 var p=document.createElement('p');
+                 //var textNode = document.createTextNode(PATH2);
+                 p.innerText=PATH2;
+                 var img =  new Image();
+                 img.src = url;
+                li.appendChild(img);
+                li.appendChild(p);
+                temp.appendChild(li);
+                onload();
+            })
+        }, false)
+        //上傳路徑
+        var getPathBtn = document.getElementById("getPathBtn");
+        getPathBtn.addEventListener("click", function () {
+            var getvalue = document.getElementById("path").value;
+            db.ref('Path').set(getvalue)
+                .then(function () {
+                    alert("建立成功");
+                }).catch(function () {
+                    alert("伺服器發生錯誤，請稍後再試");
+                });;
+        }, false)
+
+
+        /*.child 
+         document.createElement('xx') 會爛掉
+        .appendChild 只能傳入節點，而且不能傳入字串*/
+        /*function writepathdata(){
+         var getPicBtn = document.getElementById("path");
+         db.ref('user1/Path').set(getPicBtn.val)
+         .then(function () {
+             alert("建立成功");
+         }).catch(function () {
+             alert("伺服器發生錯誤，請稍後再試");
+         });;
+         }
+      function Changesrc(){ 
+         var p = PATH.split("?")[0];
+         console.log(p);
+         //document.getElementById("myimage").setAttribute(src,"\""+p+"\"");////////上傳錯誤(整個function功能)
+         var img =document.getElementsByTagName("img")[0];
+         img.setAttribute("src","\""+PATH+"\"");
+         }*/
+
+   /*//上傳照片 爛掉
+        var file;
+        var uploadFileInput = document.getElementById("uploadFileInput");
+        var elePreview=$("#filePreview");
+        var Preview=$("#Preview");
+        uploadFileInput.addEventListener("change", function () {
+            file = this.files[0];/////
+            if(file){
+                var reader=new FileReader();
+                reader.onload = function(e){
+                    elePreview.show().html(Preview.replace("$name$",file.name).replace("$result$",e.target.result));
+                }
+                $("#fileSubmit").show();
+            }
+            var storageRef2 = firebase.storage().ref('images/'+file.name);
+            var uploadTask = storageRef2.put(file);
+            uploadTask.on('state_changed', function (snapshot) {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                var complete = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100 |0);
+                this.progress=complete;
+                console.log('Upload is ' + progress + '% done');
+                $("progress").css("vibility","visible").val(complete);
+
+                switch (snapshot.state) {
+                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                        console.log('Upload is paused');
+                        break;
+                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                        console.log('Upload is running');
+                        break;
+                }
+            }, function (error) {
+                alert("上傳錯誤");
+            }, function () {
+                var downloadURL = uploadTask.snapshot.downloadURL;
+            });
+        }, false);*/
+    </script>
+
+ 
