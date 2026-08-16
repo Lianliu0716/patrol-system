@@ -1,101 +1,142 @@
-# 基於動態景物核對之智慧巡邏系統
+# Scene-Verification Patrol Check-In System
 
-大學畢業專題。以「現場拍照 + 影像核對」取代傳統巡邏打卡，確認巡邏人員確實抵達現場，而非只是刷過一個標籤。
+> **Undergraduate capstone project** — *An Intelligent Patrol System Based on Dynamic Scene Verification.*
 
-## 解決什麼問題
+A patrol check-in system that replaces "tap a tag" with **"photograph the scene and match it"**, so that a
+check-in proves the guard was physically at the location — not just that a tag was scanned.
 
-傳統巡邏簽到多半依賴 NFC 標籤或 QR code，只能證明「有東西被掃過」，無法證明人真的在現場 —— 標籤可以被拆下帶走、QR code 可以翻拍代刷。
+<!-- Screenshots go here:
+<p align="center">
+  <img src="docs/demo.png" alt="Demo — capture, match, and advance the patrol progress" width="480">
+</p>
+-->
 
-這套系統改成要求巡邏人員在每個巡邏點對指定景物拍照，App 當場把照片與資料庫中的基準影像比對，比對通過才算完成該點並推進巡邏進度。景物是現場環境的一部分，無法被攜帶或翻拍，因此「拍得到」等同「人在現場」。
+## The problem
 
-## 系統架構
+Electronic patrol check-in is normally done with NFC tags or QR codes. Both prove only that *something was
+scanned*: a tag can be detached and carried away, a QR code can be photographed and re-used elsewhere.
+Neither proves presence.
 
-```mermaid
-flowchart LR
-    A["行動端 App<br/>Xamarin.Forms"] -->|上傳巡邏照片| S["Firebase Storage"]
-    S -->|下載基準影像| A
-    A -->|寫入巡邏記錄| D["Firebase<br/>Realtime Database"]
-    N["後端 API<br/>Node.js + Express"] -->|CRUD| D
-    W["管理網頁<br/>HTML + Firebase JS SDK"] -->|讀取記錄| D
+This system requires the guard to photograph a designated scene at each patrol point. The app matches that
+photo against a reference image on the spot, and only advances the patrol when the match passes. The scene
+is part of the environment — it cannot be carried away or re-photographed off-site.
+
+## How it works
+
+```
+patrol point
+   │
+   ▼  Xamarin.Forms camera      capture the designated scene
+   ▼  Firebase Storage          upload the shot, fetch the reference image
+   ▼  OpenCV template matching  grayscale TM_CCOEFF_NORMED, per-point threshold
+   ▼  Xamarin.Essentials        GPS coordinates captured alongside the match
+   ▼  Realtime Database         write the check-in, advance the progress bar
 ```
 
-## 核心：影像核對怎麼做
+### Two independent checks
 
-程式在 `app/App1/Views/CameraViewPage.xaml.cs`，用 OpenCV for Android 實作：
+Passing requires **both** signals, which is what makes the check-in hard to fake:
 
-1. **正規化互相關樣板比對** —— 兩張影像轉灰階後，以 `Imgproc.MatchTemplate` 搭配 `TM_CCOEFF_NORMED` 計算相似度，取最大回應值判定。選正規化版本是為了降低整體亮度變化的影響。
-2. **處理尺寸與方向不一致** —— 現場拍攝的照片不會剛好等於基準圖的尺寸：
-   - 若基準圖比拍攝圖大，交換兩者角色再比對
-   - 若只有單邊超出（長方形對正方形），將影像旋轉 90° 後重試，仍失敗才判定無法比對
-3. **逐點調整門檻** —— 不同巡邏點的標的物特徵強度差異很大，門檻依標的物分別設為 0.30 / 0.35 / 0.45，而非全域單一值。
-4. **視覺回饋** —— 比對成功時在畫面上框出匹配位置，讓使用者知道系統認到的是哪個區域。
-
-## 使用流程
-
-選擇巡邏路線 → 進入巡邏點 → 開啟相機拍攝指定景物 → 上傳並與基準影像比對 → 通過後進度條推進至下一點 → 全部完成後顯示巡邏完成頁。
-
-進度條是自製元件（`StepProgressBarControl.cs`），Android 端另有原生實作。
-
-## 專案結構
-
-| 目錄 | 說明 | 技術 |
+| Signal | What it proves | Failure mode it closes |
 |---|---|---|
-| `app/` | 行動端 App：拍照、影像比對、巡邏進度 | Xamarin.Forms（Android / iOS / UWP） |
-| `server/` | 後端 API：巡邏資料 CRUD | Node.js + Express |
-| `web/` | 網頁端管理介面 | HTML + Firebase JS SDK |
+| Scene match | The camera is pointed at *this* scene | A tag carried to another location |
+| GPS fix | The device is at *this* coordinate | A photo of a photo, taken elsewhere |
 
-三個部分共用同一個 Firebase 專案（Realtime Database + Storage）。
+Neither alone is sufficient: a similar-looking scene elsewhere passes the visual check but fails GPS; a
+spoofed location passes GPS but has no matching scene to photograph.
 
-### `app/` 主要檔案
+### Matching details
 
-| 檔案 | 職責 |
-|---|---|
-| `Views/CameraViewPage.xaml.cs` | 相機擷取與影像比對主流程 |
-| `Page1.xaml.cs` | 巡邏點清單 |
-| `Finish.xaml.cs` | 巡邏完成頁 |
-| `Transpoter.cs` | 頁面間狀態傳遞 |
-| `StepProgressBarControl.cs` | 自製步驟進度條元件 |
+Implemented in `app/App1/Views/CameraViewPage.xaml.cs` with OpenCV for Android:
 
-## 設定
+- **Normalized cross-correlation** — both images are converted to grayscale and compared with
+  `Imgproc.MatchTemplate` using `TM_CCOEFF_NORMED`; the peak response decides the match. The normalized
+  variant was chosen to reduce sensitivity to overall brightness changes.
+- **Size and orientation fallbacks** — a field photo rarely matches the reference dimensions. If the
+  reference is larger than the capture, the two are swapped; if only one dimension overflows
+  (portrait vs. landscape), the image is rotated 90° and retried; only then is the pair rejected.
+- **Per-point thresholds** — feature strength varies a lot between patrol points, so thresholds are set
+  per target (0.30 / 0.35 / 0.45) rather than as a single global value.
+- **Visual feedback** — on a successful match the app draws a rectangle over the matched region, so the
+  guard can see what the system actually recognised.
 
-這個 repo **不包含任何 Firebase 金鑰或專案識別碼**。要執行的話需自備 Firebase 專案，並填入以下三處設定：
+## What is my own work
 
-### 1. 行動端
+This was a team capstone project.
+
+| Part | Directory | Mine? |
+|---|---|---|
+| **Mobile app** | `app/` | ✅ original — camera flow, patrol sequencing, GPS capture, custom step progress bar |
+| **Web admin console** | `web/` | ✅ original |
+| **Backend API + Firebase integration** | `server/` | 🤝 roughly half — shared with a teammate |
+| **Scene-matching algorithm** | `app/App1/Views/CameraViewPage.xaml.cs` | 🤝 minor — mostly a teammate's work; I integrated it into the app flow |
+
+No Firebase keys or project identifiers are included in this repository — see [Setup](#setup).
+
+## Repository layout
 
 ```
+.
+├── app/                    ⭐ Xamarin.Forms client (Android / iOS / UWP)
+│   └── App1/
+│       ├── Views/CameraViewPage.xaml.cs   capture + scene matching
+│       ├── Page1.xaml.cs                  patrol point list, GPS fix
+│       ├── Finish.xaml.cs                 completion screen
+│       ├── StepProgressBarControl.cs      custom step progress bar
+│       └── Transpoter.cs                  cross-page state
+├── web/                    ⭐ admin console (Firebase JS SDK); index_3.html is the latest
+├── server/                 Node.js + Express API (patrol data CRUD)
+└── *.example               config templates — real keys are gitignored
+```
+
+## Setup
+
+The repository contains **no Firebase keys or project identifiers**. Bring your own Firebase project
+(Realtime Database + Storage) and fill in three places.
+
+**1. Mobile client**
+
+```bash
 cp app/App1/FirebaseConfig.cs.example app/App1/FirebaseConfig.cs
 ```
 
-填入 `DatabaseUrl` 與 `StorageBucket`。基準影像放在 Storage 的 `patrol_dataset/<巡邏點>/<編號>.jpg`。
+Set `DatabaseUrl` and `StorageBucket`. Reference images live in Storage under
+`patrol_dataset/<point>/<id>.jpg`.
 
-### 2. 後端
+**2. Backend**
 
-```
+```bash
 cp server/.env.example server/.env
 npm install
 ```
 
-填入 Firebase web config 的各欄位（Firebase Console → 專案設定 → 一般）。
+Fill in the Firebase web config values (Firebase Console → Project settings → General).
 
-### 3. 網頁端
+**3. Web console**
 
-```
+```bash
 cp web/.firebaserc.example web/.firebaserc
 ```
 
-另外把 `web/` 底下 HTML 與 `public/init-firebase.js` 中的 `YOUR_API_KEY`、`YOUR-PROJECT-ID`、`YOUR_SENDER_ID` 換成實際值。
+Also replace `YOUR_API_KEY`, `YOUR-PROJECT-ID` and `YOUR_SENDER_ID` in the HTML files under `web/` and in
+`public/init-firebase.js`.
 
-> **注意**：Firebase 的 web apiKey 設計上就會出現在前端原始碼中，它不是密碼。實際的存取控制請設定 Firebase 的安全性規則（Security Rules），不要依賴隱藏 apiKey。
+> A Firebase web `apiKey` is *designed* to be visible in client source — it is not a password. Access
+> control belongs in Firebase Security Rules, not in hiding the key.
 
-## 已知限制
+## Limitations
 
-誠實記錄目前做法的邊界，也是後續可以往下做的方向：
+Stated plainly, because they are also the obvious next steps:
 
-- **樣板比對對視角與光線敏感** —— 拍攝角度偏移較多或日夜光線差異大時，相似度會明顯下降。改用特徵點比對（ORB / SIFT）或輕量級深度學習模型會更穩定。
-- **門檻靠人工調參** —— 目前三組門檻是實測後手動決定的，巡邏點增加時無法擴展，應改為由資料自動決定。
-- **比對在裝置端進行** —— 好處是離線可用、不必上傳原圖，但受限於手機運算能力。
+- **Template matching is sensitive to viewpoint and lighting.** Large angle offsets or a day/night change
+  drop the correlation score noticeably. Feature-based matching (ORB / SIFT) or a lightweight learned
+  model would be more robust.
+- **Thresholds are hand-tuned.** The three values were chosen empirically and do not scale as patrol
+  points are added; they should be derived from data.
+- **Matching runs on-device.** Good for offline use and for not shipping raw photos to a server, but
+  bounded by phone compute.
 
-## 備註
+## Notes
 
-- 原始開發於 2022–2023 年，Xamarin.Forms 已由 .NET MAUI 取代。
-- `web/` 底下數個 `index*.html` 為開發過程中的不同版本，`index_3.html` 為最新且功能最完整者。
+- Built in 2022–2023. Xamarin.Forms has since been superseded by .NET MAUI.
+- `web/` contains several `index*.html` iterations; `index_3.html` is the most complete.
